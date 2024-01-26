@@ -1,0 +1,73 @@
+-- Create CRICKET_DATABASE database if it does not exists.
+CREATE DATABASE IF NOT EXISTS CRICKET_DATABASE
+
+-- Use CRICKET_DATABASE database.
+USE CRICKET_DATABASE
+
+-- Create or replace ODI_MATCH_RESULTS table.
+CREATE OR REPLACE  TABLE ODI_MATCH_RESULTS(
+`Result` VARCHAR(10),
+Margin VARCHAR(10),
+Toss VARCHAR(10),
+Bat VARCHAR(10),
+Opposition VARCHAR(20),
+Ground VARCHAR(20),
+Start_Date DATE,
+Match_Type VARCHAR(10),
+Match_ID INT,
+Country VARCHAR(20),
+Country_ID INT
+);
+
+-- Display the contents of the ODI_MATCH_RESULTS table.
+SELECT * FROM ODI_MATCH_RESULTS;
+
+-- Add new columns Margin_by_runs and Margin_by_wickets.
+ALTER TABLE ODI_MATCH_RESULTS
+ADD COLUMN Margin_by_runs INT,
+ADD COLUMN Margin_by_wickets INT
+
+
+-- Update Margin_by_runs column with runs.
+UPDATE ODI_MATCH_RESULTS
+SET Margin_by_runs = 
+    CASE
+        WHEN Margin LIKE '%runs%' THEN CAST(REPLACE(Margin, ' runs', '') AS INT)
+        WHEN Margin LIKE '%wickets' THEN 0
+        WHEN Margin = '-' THEN 0
+    END 
+
+-- Update Margin_by_runs column with runs.
+UPDATE ODI_MATCH_RESULTS
+SET Margin_by_wickets = 
+    CASE
+        WHEN Margin LIKE '%wickets%' THEN CAST(REPLACE(Margin, ' wickets', '') AS INT)
+        WHEN Margin LIKE '%runs' THEN 0
+        WHEN Margin = '-' THEN 0
+    END 
+
+SELECT * FROM ODI_MATCH_RESULTS;
+
+-- Select different values from Result column.
+SELECT DISTINCT("`RESULT`") FROM ODI_MATCH_RESULTS
+
+-- Update Result column with 'Unknown' which has '-' value.
+UPDATE ODI_MATCH_RESULTS
+SET "`RESULT`" = 'Unkn'
+WHERE "`RESULT`" = '-'
+
+-- Select different values from Toss column.
+SELECT DISTINCT(TOSS) FROM ODI_MATCH_RESULTS
+
+-- Update Toss column with 'Unkn' which has '-' value.
+UPDATE ODI_MATCH_RESULTS
+SET TOSS = 'Unkn'
+WHERE TOSS = '-'
+
+SELECT DISTINCT(BAT) FROM ODI_MATCH_RESULTS
+
+-- Update Bat column with 'Unkn' which has '-' value.
+UPDATE ODI_MATCH_RESULTS
+SET BAT = 'Unkn'
+WHERE TOSS = '-'
+
